@@ -6,6 +6,6 @@
         <p>Вы авторизованы как <b>{{ user.username }}</b></p>
     {% endif %}
 
-    <a href="http://ya.ru">Яндекс</a>
+    <a href="{% url 'time_slots_add' %}">Создать тайм-слот</a>
     {{ year }}
 {% endblock %}

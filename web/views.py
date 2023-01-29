@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 
-from web.forms import RegistrationForm, AuthForm
+from web.forms import RegistrationForm, AuthForm, TimeSlotForm
 
 User = get_user_model()
 
@@ -50,3 +50,13 @@ def auth_view(request):
 def logout_view(request):
     logout(request)
     return redirect("main")
+
+
+def time_slot_add_view(request):
+    form = TimeSlotForm()
+    if request.method == 'POST':
+        form = TimeSlotForm(data=request.POST, initial={"user": request.user})
+        if form.is_valid():
+            form.save()
+            return redirect("main")
+    return render(request, "web/time_slot_form.html", {"form": form})
