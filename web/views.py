@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
-from web.forms import RegistrationForm
+from web.forms import RegistrationForm, AuthForm
 
 User = get_user_model()
 
@@ -31,3 +31,8 @@ def registration_view(request):
     return render(request, "web/registration.html", {
         "form": form, "is_success": is_success
     })
+
+
+def auth_view(request):
+    form = AuthForm()
+    return render(request, "web/auth.html", {"form": form})
