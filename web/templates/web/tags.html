@@ -3,7 +3,10 @@
     <h2>Теги</h2>
     <ul>
         {% for tag in tags %}
-            <li>{{ tag.title }}</li>
+            <li>
+                {{ tag.title }}
+                <small><a href="{% url 'tags_delete' tag.id %}">удалить</a></small>
+            </li>
         {% endfor %}
     </ul>
 

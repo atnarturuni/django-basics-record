@@ -71,5 +71,11 @@ def tags_view(request):
         form = TimeSlotTagForm(data=request.POST, initial={"user": request.user})
         if form.is_valid():
             form.save()
-            form = TimeSlotTagForm()
+            return redirect('tags')
     return render(request, "web/tags.html", {"tags": tags, "form": form})
+
+
+def tags_delete_view(request, id):
+    tag = TimeSlotTag.objects.get(id=id)
+    tag.delete()
+    return redirect('tags')
