@@ -8,6 +8,7 @@ from django.db.models.functions import TruncDate
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
+from web.services import filter_timeslots
 
 User = get_user_model()
 
@@ -19,19 +20,7 @@ def main_view(request):
 
     filter_form = TimeSlotFilterForm(request.GET)
     filter_form.is_valid()
-    filters = filter_form.cleaned_data
-
-    if filters['search']:
-        timeslots = timeslots.filter(title__icontains=filters['search'])
-
-    if filters['is_realtime'] is not None:
-        timeslots = timeslots.filter(is_realtime=filters['is_realtime'])
-
-    if filters['start_date']:
-        timeslots = timeslots.filter(start_date__gte=filters['start_date'])
-
-    if filters['end_date']:
-        timeslots = timeslots.filter(end_date__lte=filters['end_date'])
+    timeslots = filter_timeslots(timeslots, filter_form.cleaned_data)
 
     total_count = timeslots.count()
     timeslots = timeslots.prefetch_related("tags").select_related("user").annotate(
@@ -43,7 +32,7 @@ def main_view(request):
 
     return render(request, "web/main.html", {
         "current_timeslot": current_timeslot,
-        'timeslots': paginator.get_page(page_number),
+        'timeslots_qs': paginator.get_page(page_number),
         "form": TimeSlotForm(),
         "filter_form": filter_form,
         'total_count': total_count
@@ -73,7 +62,6 @@ def analytics_view(request):
         "overall_stat": overall_stat,
         'days_stat': days_stat
     })
-
 
 
 def registration_view(request):
