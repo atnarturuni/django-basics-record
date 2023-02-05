@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count, F, Max, Min, Q, Sum
 from django.db.models.functions import TruncDate
 from django.http import HttpResponse
+from django.views.decorators.cache import cache_page
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm, \
     ImportForm
@@ -15,6 +16,7 @@ from web.services import filter_timeslots, export_timeslots_csv, import_timeslot
 User = get_user_model()
 
 
+@cache_page(60)
 @login_required
 def main_view(request):
     timeslots = TimeSlot.objects.filter(user=request.user).order_by('-start_date')
@@ -34,7 +36,7 @@ def main_view(request):
     )
     page_number = request.GET.get("page", 1)
 
-    paginator = Paginator(timeslots, per_page=10)
+    paginator = Paginator(timeslots, per_page=100)
 
     if request.GET.get("export") == 'csv':
         response = HttpResponse(
