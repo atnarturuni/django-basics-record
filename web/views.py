@@ -1,7 +1,6 @@
-from datetime import datetime
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.utils.timezone import now
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
@@ -10,8 +9,10 @@ User = get_user_model()
 
 
 def main_view(request):
+    current_timeslot = TimeSlot.objects.filter(end_date__isnull=True).first()
     timeslots = TimeSlot.objects.all().order_by('-start_date')
     return render(request, "web/main.html", {
+        "current_timeslot": current_timeslot,
         'timeslots': timeslots,
         "form": TimeSlotForm()
     })
@@ -63,6 +64,20 @@ def time_slot_edit_view(request, id=None):
             form.save()
             return redirect("main")
     return render(request, "web/time_slot_form.html", {"form": form})
+
+
+def time_slot_stop_view(request, id):
+    if request.method == 'POST':
+        timeslot = get_object_or_404(TimeSlot, id=id)
+        timeslot.end_date = now()
+        timeslot.save()
+    return redirect('main')
+
+
+def time_slot_delete_view(request, id):
+    tag = TimeSlot.objects.get(id=id)
+    tag.delete()
+    return redirect('main')
 
 
 def _list_editor_view(request, model_cls, form_cls, template_name, url_name):
