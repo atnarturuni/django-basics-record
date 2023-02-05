@@ -1,5 +1,6 @@
 import csv
 
+from timetracker.redis import get_redis_client
 from web.models import TimeSlot, TimeSlotTag
 
 
@@ -59,3 +60,12 @@ def import_timeslots_from_csv(file, user_id):
                 TimeSlot.tags.through(timeslot_id=timeslot.id, timeslottag_id=tag_id)
             )
     TimeSlot.tags.through.objects.bulk_create(time_slot_tags)
+
+
+def get_stat():
+    redis = get_redis_client()
+    keys = redis.keys("stat_*")
+    return [
+        (key.decode().replace("stat_", ""), redis.get(key).decode())
+        for key in keys
+    ]
