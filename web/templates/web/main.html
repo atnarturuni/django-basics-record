@@ -7,5 +7,17 @@
     {% endif %}
 
     <a href="{% url 'time_slots_add' %}">Создать тайм-слот</a>
+
+    <ul>
+        {% for timeslot in timeslots %}
+            <li>
+                <b>{{ timeslot.title }}</b>
+                {{ timeslot.start_date }} – {{ timeslot.end_date }}
+                {% if timeslot.is_realtime %} <small>(realtime)</small> {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+
     {{ year }}
 {% endblock %}

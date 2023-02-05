@@ -4,14 +4,15 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm
+from web.models import TimeSlot
 
 User = get_user_model()
 
 
 def main_view(request):
-    year = datetime.now().year
+    timeslots = TimeSlot.objects.all()
     return render(request, "web/main.html", {
-        "year": year
+        'timeslots': timeslots
     })
 
 
