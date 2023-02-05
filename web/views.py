@@ -5,10 +5,11 @@ from django.utils.timezone import now
 from django.core.paginator import Paginator
 from django.db.models import Count, F, Max, Min, Q, Sum
 from django.db.models.functions import TruncDate
+from django.http import HttpResponse
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
-from web.services import filter_timeslots
+from web.services import filter_timeslots, export_timeslots_csv
 
 User = get_user_model()
 
@@ -19,7 +20,6 @@ def main_view(request):
     current_timeslot = timeslots.filter(end_date__isnull=True).first()
 
     filter_form = TimeSlotFilterForm(request.GET)
-    filter_form.is_valid()
     timeslots = filter_timeslots(timeslots, filter_form.cleaned_data)
 
     total_count = timeslots.count()
@@ -28,11 +28,19 @@ def main_view(request):
         spent_time=F("end_date") - F("start_date")
     )
     page_number = request.GET.get("page", 1)
+
     paginator = Paginator(timeslots, per_page=10)
+
+    if request.GET.get("export") == 'csv':
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={"Content-Disposition": "attachment; filename=timeslots.csv"}
+        )
+        return export_timeslots_csv(timeslots, response)
 
     return render(request, "web/main.html", {
         "current_timeslot": current_timeslot,
-        'timeslots_qs': paginator.get_page(page_number),
+        'timeslots': paginator.get_page(page_number),
         "form": TimeSlotForm(),
         "filter_form": filter_form,
         'total_count': total_count
