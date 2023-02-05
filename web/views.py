@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.core.paginator import Paginator
 
-from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm
+from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
 
 User = get_user_model()
@@ -15,13 +15,23 @@ def main_view(request):
     timeslots = TimeSlot.objects.filter(user=request.user).order_by('-start_date')
     current_timeslot = timeslots.filter(end_date__isnull=True).first()
 
+    filter_form = TimeSlotFilterForm(request.GET)
+    filter_form.is_valid()
+    filters = filter_form.cleaned_data
+
+    if filters['search']:
+        timeslots = timeslots.filter(title__icontains=filters['search'])
+
+    total_count = timeslots.count()
     page_number = request.GET.get("page", 1)
     paginator = Paginator(timeslots, per_page=10)
 
     return render(request, "web/main.html", {
         "current_timeslot": current_timeslot,
         'timeslots': paginator.get_page(page_number),
-        "form": TimeSlotForm()
+        "form": TimeSlotForm(),
+        "filter_form": filter_form,
+        'total_count': total_count
     })
 
 
