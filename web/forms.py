@@ -32,7 +32,7 @@ class TimeSlotForm(forms.ModelForm):
 
     class Meta:
         model = TimeSlot
-        fields = ('title', 'start_date', 'end_date', "image")
+        fields = ('title', 'start_date', 'end_date', "image", "tags")
         widgets = {
             "start_date": forms.DateTimeInput(
                 attrs={"type": "datetime-local"}, format='%Y-%m-%dT%H:%M'
