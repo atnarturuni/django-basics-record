@@ -11,7 +11,7 @@ from django.views.decorators.cache import cache_page
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm, \
     ImportForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
-from web.services import filter_timeslots, export_timeslots_csv, import_timeslots_from_csv
+from web.services import filter_timeslots, export_timeslots_csv, import_timeslots_from_csv, get_stat
 
 User = get_user_model()
 
@@ -64,6 +64,12 @@ def import_view(request):
     return render(request, "web/import.html", {
         "form": ImportForm()
     })
+
+
+@login_required
+def stat_view(request):
+    return render(request, "web/stat.html", {"results": get_stat()})
+
 
 
 @login_required

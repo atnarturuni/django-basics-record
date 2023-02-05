@@ -1,0 +1,11 @@
+{% extends 'web/base.html' %}
+{% block content %}
+    <h2>Статистика</h2>
+    <ul>
+        {% for url, count in results %}
+            <li>
+                <b>{{ url }}</b> – {{ count }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

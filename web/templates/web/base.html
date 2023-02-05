@@ -18,6 +18,7 @@
             <a href="{% url 'import' %}">Импорт</a>
             <a href="{% url 'tags' %}">Теги</a>
             <a href="{% url 'holidays' %}">Выходные</a>
+            <a href="{% url 'stat' %}">Статистика</a>
             <div style="text-align: right">
                 {% if not user.is_anonymous %}
                     Вы авторизованы как <b>{{ user.username }}</b>
