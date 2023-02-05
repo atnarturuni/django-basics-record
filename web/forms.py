@@ -70,3 +70,12 @@ class HolidayForm(forms.ModelForm):
 
 class TimeSlotFilterForm(forms.Form):
     search = forms.CharField(widget=forms.TextInput(attrs={"placeholder": "Поиск"}), required=False)
+    is_realtime = forms.NullBooleanField(
+        widget=forms.Select(
+            choices=(
+                ('unknown', 'Реалтайм'),
+                ('true', 'Реалтайм: да'),
+                ('false', 'Реалтайм: нет')
+            )
+        )
+    )

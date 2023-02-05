@@ -22,6 +22,9 @@ def main_view(request):
     if filters['search']:
         timeslots = timeslots.filter(title__icontains=filters['search'])
 
+    if filters['is_realtime'] is not None:
+        timeslots = timeslots.filter(is_realtime=filters['is_realtime'])
+
     total_count = timeslots.count()
     page_number = request.GET.get("page", 1)
     paginator = Paginator(timeslots, per_page=10)
