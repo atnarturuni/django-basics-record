@@ -22,6 +22,7 @@
         <b>Фильтры:</b><br>
 
         {% for field in filter_form %}
+            {{ field.label }}
             {{ field }}
         {% endfor %}
 
