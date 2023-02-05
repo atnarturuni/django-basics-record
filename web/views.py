@@ -60,6 +60,7 @@ def import_view(request):
         "form": ImportForm()
     })
 
+
 @login_required
 def analytics_view(request):
     overall_stat = TimeSlot.objects.aggregate(

@@ -22,6 +22,13 @@ class TimeSlot(models.Model):
     tags = models.ManyToManyField(TimeSlotTag, verbose_name='Теги', blank=True)
     image = models.ImageField(upload_to='time_slots/', null=True, blank=True, verbose_name='Картинка')
 
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'слот'
+        verbose_name_plural = 'слоты'
+
 
 class Holiday(models.Model):
     date = models.DateField(verbose_name='Дата')
