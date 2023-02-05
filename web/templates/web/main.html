@@ -1,11 +1,37 @@
 {% extends 'web/base.html' %}
 {% block content %}
-    <h1>Hello world</h1>
+    {% if current_timeslot %}
+        <b>Текущий слот:</b> {{ current_timeslot.title }}
+        <small>начат в {{ current_timeslot.start_date }}</small>
+        <form action="{% url 'time_slots_stop' current_timeslot.id %}" method="post">
+            {% csrf_token %}
+            <button>Закончить</button>
+        </form>
 
-    {% if not user.is_anonymous %}
-        <p>Вы авторизованы как <b>{{ user.username }}</b></p>
+    {% else %}
+        <b>Добавить таймслот</b>
+        <form action="{% url 'time_slots_add' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button>Сохранить</button>
+        </form>
     {% endif %}
 
-    <a href="http://ya.ru">Яндекс</a>
+    <ul>
+        {% for timeslot in timeslots %}
+            <li>
+                <b>{{ timeslot.title }}</b>
+                {% if timeslot.is_realtime %} <small>(realtime)</small> {% endif %}
+                <br>
+                <small>
+                    {{ timeslot.start_date }} {% if timeslot.end_date %}– {{ timeslot.end_date }} {% endif %}
+                    <a href="{% url 'time_slots_edit' timeslot.id %}">изменить</a>
+                    <a href="{% url 'time_slots_delete' timeslot.id %}">удалить</a>
+                </small>
+            </li>
+        {% endfor %}
+    </ul>
+
+
     {{ year }}
 {% endblock %}
