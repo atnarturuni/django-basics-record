@@ -10,7 +10,12 @@
     <b>Статистика по дням</b>
     <ul>
         {% for day_stat in days_stat %}
-            <li><b>{{ day_stat.date }}</b> – {{ day_stat.count }} слотов, {{ day_stat.realtime_count }} в реалтайме</li>
+            <li>
+                <b>{{ day_stat.date }}</b> –
+                {{ day_stat.count }} слотов,
+                {{ day_stat.realtime_count }} в реалтайме,
+                {{ day_stat.spent_time }} потрачено
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}
