@@ -32,8 +32,9 @@ def main_view(request):
         timeslots = timeslots.filter(end_date__lte=filters['end_date'])
 
     total_count = timeslots.count()
+    timeslots = timeslots.prefetch_related("tags")
     page_number = request.GET.get("page", 1)
-    paginator = Paginator(timeslots, per_page=10)
+    paginator = Paginator(timeslots, per_page=1000)
 
     return render(request, "web/main.html", {
         "current_timeslot": current_timeslot,

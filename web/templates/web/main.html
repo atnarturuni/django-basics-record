@@ -35,6 +35,9 @@
         {% for timeslot in timeslots %}
             <li>
                 <b>{{ timeslot.title }}</b>
+                {% if timeslot.tags.all %}
+                    <small>[{% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]</small>
+                {% endif %}
                 {% if timeslot.is_realtime %} <small>(realtime)</small> {% endif %}
                 <br>
                 <small>
