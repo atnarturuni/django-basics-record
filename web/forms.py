@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from web.models import TimeSlot
+from web.models import TimeSlot, TimeSlotTag
 
 User = get_user_model()
 
@@ -42,3 +42,12 @@ class TimeSlotForm(forms.ModelForm):
             )
         }
 
+
+class TimeSlotTagForm(forms.ModelForm):
+    def save(self, commit=True):
+        self.instance.user = self.initial['user']
+        return super().save(commit)
+
+    class Meta:
+        model = TimeSlotTag
+        fields = ('title',)

@@ -1,0 +1,16 @@
+{% extends 'web/base.html' %}
+{% block content %}
+    <h2>Теги</h2>
+    <ul>
+        {% for tag in tags %}
+            <li>{{ tag.title }}</li>
+        {% endfor %}
+    </ul>
+
+    <b>Добавление тега</b>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button>Сохранить тег</button>
+    </form>
+{% endblock %}

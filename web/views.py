@@ -3,8 +3,8 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model, authenticate, login, logout
 
-from web.forms import RegistrationForm, AuthForm, TimeSlotForm
-from web.models import TimeSlot
+from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm
+from web.models import TimeSlot, TimeSlotTag
 
 User = get_user_model()
 
@@ -62,3 +62,14 @@ def time_slot_edit_view(request, id=None):
             form.save()
             return redirect("main")
     return render(request, "web/time_slot_form.html", {"form": form})
+
+
+def tags_view(request):
+    tags = TimeSlotTag.objects.all()
+    form = TimeSlotTagForm()
+    if request.method == 'POST':
+        form = TimeSlotTagForm(data=request.POST, initial={"user": request.user})
+        if form.is_valid():
+            form.save()
+            form = TimeSlotTagForm()
+    return render(request, "web/tags.html", {"tags": tags, "form": form})
