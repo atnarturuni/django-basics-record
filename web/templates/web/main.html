@@ -35,10 +35,15 @@
         {% for timeslot in timeslots %}
             <li>
                 <b>{{ timeslot.title }}</b>
-                {% if timeslot.tags.all %}
-                    <small>[{% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]</small>
-                {% endif %}
-                {% if timeslot.is_realtime %} <small>(realtime)</small> {% endif %}
+                <small>
+                    {% if timeslot.tags.all %}
+                        [{% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]
+                    {% endif %}
+
+                    {{ timeslot.user.username }}
+
+                    {% if timeslot.is_realtime %}(realtime){% endif %}
+                </small>
                 <br>
                 <small>
                     {{ timeslot.start_date }} {% if timeslot.end_date %}– {{ timeslot.end_date }} {% endif %}
