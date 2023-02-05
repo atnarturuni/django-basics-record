@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.core.paginator import Paginator
-from django.db.models import Count, F
+from django.db.models import Count, F, Max, Min
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
@@ -48,6 +48,17 @@ def main_view(request):
         'total_count': total_count
     })
 
+
+@login_required
+def analytics_view(request):
+    overall_stat = TimeSlot.objects.aggregate(
+        count=Count("id"),
+        max_date=Max("end_date"),
+        min_date=Min("start_date")
+    )
+    return render(request, "web/analytics.html", {
+        "overall_stat": overall_stat
+    })
 
 def registration_view(request):
     form = RegistrationForm()

@@ -6,14 +6,15 @@
 <body>
     <h1><a href="{% url 'main' %}">Time tracker</a></h1>
     <nav>
-        <a href="{% url 'main' %}">Слоты</a>
         {% if user.is_anonymous %}
             <div style="text-align: right">
                 <a href="{% url 'registration' %}">Регистрация</a>
                 <a href="{% url 'auth' %}">Авторизация</a>
             </div>
         {% else %}
+            <a href="{% url 'main' %}">Слоты</a>
             <a href="{% url 'time_slots_add' %}">Создать тайм-слот</a>
+            <a href="{% url 'analytics' %}">Аналитика</a>
             <a href="{% url 'tags' %}">Теги</a>
             <a href="{% url 'holidays' %}">Выходные</a>
             <div style="text-align: right">
