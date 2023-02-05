@@ -1,5 +1,7 @@
 import csv
 
+from web.models import TimeSlot, TimeSlotTag
+
 
 def filter_timeslots(timeslots_qs, filters: dict):
     if filters['search']:
@@ -29,3 +31,31 @@ def export_timeslots_csv(timeslots_qs, response):
 
     return response
 
+
+def import_timeslots_from_csv(file, user_id):
+    strs_from_file = (row.decode() for row in file)
+    reader = csv.DictReader(strs_from_file)
+
+    timeslots = []
+    timeslot_tags = []
+    for row in reader:
+        timeslots.append(TimeSlot(
+            title=row['title'],
+            start_date=row['start_date'],
+            end_date=row['end_date'],
+            is_realtime=row['is_realtime'],
+            user_id=user_id
+        ))
+        timeslot_tags.append(row['tags'].split(" ") if row['tags'] else [])
+
+    saved_timeslots = TimeSlot.objects.bulk_create(timeslots)
+
+    tags_map = dict(TimeSlotTag.objects.all().values_list("title", "id"))
+    time_slot_tags = []
+    for timeslot, timeslot_tags_item in zip(saved_timeslots, timeslot_tags):
+        for tag in timeslot_tags_item:
+            tag_id = tags_map[tag]
+            time_slot_tags.append(
+                TimeSlot.tags.through(timeslot_id=timeslot.id, timeslottag_id=tag_id)
+            )
+    TimeSlot.tags.through.objects.bulk_create(time_slot_tags)

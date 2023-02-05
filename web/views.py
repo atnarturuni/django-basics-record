@@ -7,9 +7,10 @@ from django.db.models import Count, F, Max, Min, Q, Sum
 from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 
-from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
+from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm, \
+    ImportForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
-from web.services import filter_timeslots, export_timeslots_csv
+from web.services import filter_timeslots, export_timeslots_csv, import_timeslots_from_csv
 
 User = get_user_model()
 
@@ -20,6 +21,7 @@ def main_view(request):
     current_timeslot = timeslots.filter(end_date__isnull=True).first()
 
     filter_form = TimeSlotFilterForm(request.GET)
+    filter_form.is_valid()
     timeslots = filter_timeslots(timeslots, filter_form.cleaned_data)
 
     total_count = timeslots.count()
@@ -46,6 +48,17 @@ def main_view(request):
         'total_count': total_count
     })
 
+
+@login_required
+def import_view(request):
+    if request.method == 'POST':
+        form = ImportForm(files=request.FILES)
+        if form.is_valid():
+            import_timeslots_from_csv(form.cleaned_data['file'], request.user.id)
+            return redirect("main")
+    return render(request, "web/import.html", {
+        "form": ImportForm()
+    })
 
 @login_required
 def analytics_view(request):
