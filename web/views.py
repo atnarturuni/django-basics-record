@@ -56,7 +56,7 @@ def logout_view(request):
 
 
 def time_slot_edit_view(request, id=None):
-    timeslot = TimeSlot.objects.get(id=id) if id is not None else None
+    timeslot = get_object_or_404(TimeSlot, id=id) if id is not None else None
     form = TimeSlotForm(instance=timeslot)
     if request.method == 'POST':
         form = TimeSlotForm(data=request.POST, files=request.FILES, instance=timeslot, initial={"user": request.user})
@@ -75,7 +75,7 @@ def time_slot_stop_view(request, id):
 
 
 def time_slot_delete_view(request, id):
-    tag = TimeSlot.objects.get(id=id)
+    tag = get_object_or_404(TimeSlot, id=id)
     tag.delete()
     return redirect('main')
 
@@ -96,7 +96,7 @@ def tags_view(request):
 
 
 def tags_delete_view(request, id):
-    tag = TimeSlotTag.objects.get(id=id)
+    tag = get_object_or_404(TimeSlotTag, id=id)
     tag.delete()
     return redirect('tags')
 
@@ -106,6 +106,6 @@ def holidays_view(request):
 
 
 def holidays_delete_view(request, id):
-    holiday = Holiday.objects.get(id=id)
+    holiday = get_object_or_404(Holiday, id=id)
     holiday.delete()
     return redirect('holiday')
