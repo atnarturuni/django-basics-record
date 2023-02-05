@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from django.core.paginator import Paginator
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
@@ -13,9 +14,13 @@ User = get_user_model()
 def main_view(request):
     timeslots = TimeSlot.objects.filter(user=request.user).order_by('-start_date')
     current_timeslot = timeslots.filter(end_date__isnull=True).first()
+
+    page_number = request.GET.get("page", 1)
+    paginator = Paginator(timeslots, per_page=10)
+
     return render(request, "web/main.html", {
         "current_timeslot": current_timeslot,
-        'timeslots': timeslots,
+        'timeslots': paginator.get_page(page_number),
         "form": TimeSlotForm()
     })
 

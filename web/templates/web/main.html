@@ -32,6 +32,20 @@
         {% endfor %}
     </ul>
 
+    <nav>
+        {% if timeslots.has_previous %}
+            <a href="?page=1">в начало</a>
+            <a href="?page={{ timeslots.previous_page_number }}">предыдующая страница</a>
+        {% endif %}
+
+        страница {{ timeslots.number }} из {{ timeslots.paginator.num_pages }}
+
+        {% if timeslots.has_next %}
+            <a href="?page={{ timeslots.next_page_number }}">следующая страница</a>
+            <a href="?page={{ timeslots.paginator.num_pages }}">в конец</a>
+        {% endif %}
+    </nav>
+
 
     {{ year }}
 {% endblock %}
