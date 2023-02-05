@@ -37,7 +37,8 @@
                 <b>{{ timeslot.title }}</b>
                 <small>
                     {% if timeslot.tags.all %}
-                        [{% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]
+                        [{{ timeslot.tags_count }}: {% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]
+
                     {% endif %}
 
                     {{ timeslot.user.username }}
