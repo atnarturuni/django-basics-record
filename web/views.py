@@ -8,6 +8,7 @@ from web.models import TimeSlot, TimeSlotTag, Holiday
 
 User = get_user_model()
 
+
 @login_required
 def main_view(request):
     timeslots = TimeSlot.objects.filter(user=request.user).order_by('-start_date')
@@ -71,7 +72,7 @@ def time_slot_edit_view(request, id=None):
 @login_required
 def time_slot_stop_view(request, id):
     if request.method == 'POST':
-        timeslot = get_object_or_404(TimeSlot, user=request.user,  id=id)
+        timeslot = get_object_or_404(TimeSlot, user=request.user, id=id)
         timeslot.end_date = now()
         timeslot.save()
     return redirect('main')

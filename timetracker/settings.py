@@ -48,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "timetracker.debug.SqlPrintingMiddleware"
 ]
 
 ROOT_URLCONF = "timetracker.urls"
