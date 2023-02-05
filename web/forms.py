@@ -39,4 +39,4 @@ class TimeSlotForm(forms.ModelForm):
 
     class Meta:
         model = TimeSlot
-        fields = ('title', 'start_date', 'end_date')
+        fields = ('title', 'start_date', 'end_date', "image")

@@ -57,7 +57,7 @@ def time_slot_edit_view(request, id=None):
     timeslot = TimeSlot.objects.get(id=id) if id is not None else None
     form = TimeSlotForm(instance=timeslot)
     if request.method == 'POST':
-        form = TimeSlotForm(data=request.POST, instance=timeslot, initial={"user": request.user})
+        form = TimeSlotForm(data=request.POST, files=request.FILES, instance=timeslot, initial={"user": request.user})
         if form.is_valid():
             form.save()
             return redirect("main")
