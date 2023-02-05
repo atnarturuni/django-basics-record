@@ -13,6 +13,10 @@ class TimeSlotTag(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'тег'
+        verbose_name_plural = 'теги'
+
 
 class TimeSlotQuerySet(models.QuerySet):
     def annotate_spent_time(self):

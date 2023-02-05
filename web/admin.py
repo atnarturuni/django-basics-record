@@ -1,12 +1,12 @@
 from django.contrib import admin
 
-from web.models import TimeSlot
+from web.models import TimeSlot, TimeSlotTag
 
 
 class TimeSlotAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', "user", 'start_date', 'end_date', 'get_spent_time')
     search_fields = ("id", "title")
-    list_filter = ("start_date", "end_date", "is_realtime")
+    list_filter = ("start_date", "end_date", "is_realtime", "user")
     ordering = ('-start_date',)
     readonly_fields = ('is_realtime',)
 
@@ -18,4 +18,11 @@ class TimeSlotAdmin(admin.ModelAdmin):
         return instance.spent_time
 
 
+class TimeSlotTagAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', "user")
+    search_fields = ("id", "title")
+    list_filter = ("user",)
+
+
 admin.site.register(TimeSlot, TimeSlotAdmin)
+admin.site.register(TimeSlotTag, TimeSlotTagAdmin)
