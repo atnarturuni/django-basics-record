@@ -25,9 +25,12 @@ def main_view(request):
     timeslots = filter_timeslots(timeslots, filter_form.cleaned_data)
 
     total_count = timeslots.count()
-    timeslots = timeslots.prefetch_related("tags").select_related("user").annotate(
-        tags_count=Count("tags"),
-        spent_time=F("end_date") - F("start_date")
+    timeslots = (
+        timeslots
+        .prefetch_related("tags")
+        .select_related("user")
+        .annotate(tags_count=Count("tags"))
+        .annotate_spent_time()
     )
     page_number = request.GET.get("page", 1)
 

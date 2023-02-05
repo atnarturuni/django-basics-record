@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.db.models import F, Sum
 
 User = get_user_model()
 
@@ -13,7 +14,14 @@ class TimeSlotTag(models.Model):
         return self.title
 
 
+class TimeSlotQuerySet(models.QuerySet):
+    def annotate_spent_time(self):
+        return self.annotate(spent_time=F("end_date") - F("start_date"))
+
+
 class TimeSlot(models.Model):
+    objects = TimeSlotQuerySet.as_manager()
+
     title = models.CharField(max_length=256, verbose_name='Название')
     start_date = models.DateTimeField(verbose_name='Время начала', default=timezone.now)
     end_date = models.DateTimeField(verbose_name='Время окончания', null=True, blank=True)
