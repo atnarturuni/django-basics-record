@@ -17,11 +17,34 @@
         </form>
     {% endif %}
 
+    <hr>
+    <form action="">
+        <b>Фильтры:</b><br>
+
+        {% for field in filter_form %}
+            {{ field.label }}
+            {{ field }}
+        {% endfor %}
+
+        <button>Найти</button>
+
+        <a href="?">Показать всё</a>
+    </form>
+
     <ul>
         {% for timeslot in timeslots %}
             <li>
-                <b>{{ timeslot.title }}</b>
-                {% if timeslot.is_realtime %} <small>(realtime)</small> {% endif %}
+                <b>{{ timeslot.title }}</b> – {{ timeslot.spent_time }}
+                <small>
+                    {% if timeslot.tags.all %}
+                        [{{ timeslot.tags_count }}: {% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]
+
+                    {% endif %}
+
+                    {{ timeslot.user.username }}
+
+                    {% if timeslot.is_realtime %}(realtime){% endif %}
+                </small>
                 <br>
                 <small>
                     {{ timeslot.start_date }} {% if timeslot.end_date %}– {{ timeslot.end_date }} {% endif %}
@@ -31,6 +54,21 @@
             </li>
         {% endfor %}
     </ul>
+
+    всего {{ total_count }} записей. {{ timeslots|length }} на этой странице.
+    <nav>
+        {% if timeslots.has_previous %}
+            <a href="?page=1">в начало</a>
+            <a href="?page={{ timeslots.previous_page_number }}">предыдующая страница</a>
+        {% endif %}
+
+        страница {{ timeslots.number }} из {{ timeslots.paginator.num_pages }}
+
+        {% if timeslots.has_next %}
+            <a href="?page={{ timeslots.next_page_number }}">следующая страница</a>
+            <a href="?page={{ timeslots.paginator.num_pages }}">в конец</a>
+        {% endif %}
+    </nav>
 
 
     {{ year }}

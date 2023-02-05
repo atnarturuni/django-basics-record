@@ -66,3 +66,22 @@ class HolidayForm(forms.ModelForm):
         widgets = {
             "date": forms.DateTimeInput(attrs={"type": "date"}, format='%Y-%m-%d')
         }
+
+
+class TimeSlotFilterForm(forms.Form):
+    search = forms.CharField(label='', widget=forms.TextInput(attrs={"placeholder": "Поиск"}), required=False)
+    is_realtime = forms.NullBooleanField(label="Реалтайм")
+    start_date = forms.DateTimeField(
+        label="От",
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format='%Y-%m-%dT%H:%M'
+        ),
+        required=False
+    )
+    end_date = forms.DateTimeField(
+        label="до",
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format='%Y-%m-%dT%H:%M'
+        ),
+        required=False
+    )

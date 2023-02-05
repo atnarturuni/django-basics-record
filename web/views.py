@@ -2,8 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
+from django.core.paginator import Paginator
+from django.db.models import Count, F, Max, Min, Q, Sum
+from django.db.models.functions import TruncDate
 
-from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm
+from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
 
 User = get_user_model()
@@ -13,11 +16,64 @@ User = get_user_model()
 def main_view(request):
     timeslots = TimeSlot.objects.filter(user=request.user).order_by('-start_date')
     current_timeslot = timeslots.filter(end_date__isnull=True).first()
+
+    filter_form = TimeSlotFilterForm(request.GET)
+    filter_form.is_valid()
+    filters = filter_form.cleaned_data
+
+    if filters['search']:
+        timeslots = timeslots.filter(title__icontains=filters['search'])
+
+    if filters['is_realtime'] is not None:
+        timeslots = timeslots.filter(is_realtime=filters['is_realtime'])
+
+    if filters['start_date']:
+        timeslots = timeslots.filter(start_date__gte=filters['start_date'])
+
+    if filters['end_date']:
+        timeslots = timeslots.filter(end_date__lte=filters['end_date'])
+
+    total_count = timeslots.count()
+    timeslots = timeslots.prefetch_related("tags").select_related("user").annotate(
+        tags_count=Count("tags"),
+        spent_time=F("end_date") - F("start_date")
+    )
+    page_number = request.GET.get("page", 1)
+    paginator = Paginator(timeslots, per_page=10)
+
     return render(request, "web/main.html", {
         "current_timeslot": current_timeslot,
-        'timeslots': timeslots,
-        "form": TimeSlotForm()
+        'timeslots': paginator.get_page(page_number),
+        "form": TimeSlotForm(),
+        "filter_form": filter_form,
+        'total_count': total_count
     })
+
+
+@login_required
+def analytics_view(request):
+    overall_stat = TimeSlot.objects.aggregate(
+        count=Count("id"),
+        max_date=Max("end_date"),
+        min_date=Min("start_date")
+    )
+    days_stat = (
+        TimeSlot.objects.exclude(end_date__isnull=True)
+        .annotate(date=TruncDate("start_date"))
+        .values("date")
+        .annotate(
+            count=Count("id"),
+            realtime_count=Count("id", filter=Q(is_realtime=True)),
+            spent_time=Sum(F("end_date") - F("start_date"))
+        )
+        .order_by('-date')
+    )
+
+    return render(request, "web/analytics.html", {
+        "overall_stat": overall_stat,
+        'days_stat': days_stat
+    })
+
 
 
 def registration_view(request):
