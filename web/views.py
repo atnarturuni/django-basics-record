@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, F
 
 from web.forms import RegistrationForm, AuthForm, TimeSlotForm, TimeSlotTagForm, HolidayForm, TimeSlotFilterForm
 from web.models import TimeSlot, TimeSlotTag, Holiday
@@ -34,7 +34,8 @@ def main_view(request):
 
     total_count = timeslots.count()
     timeslots = timeslots.prefetch_related("tags").select_related("user").annotate(
-        tags_count=Count("tags")
+        tags_count=Count("tags"),
+        spent_time=F("end_date") - F("start_date")
     )
     page_number = request.GET.get("page", 1)
     paginator = Paginator(timeslots, per_page=10)

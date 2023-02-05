@@ -34,7 +34,7 @@
     <ul>
         {% for timeslot in timeslots %}
             <li>
-                <b>{{ timeslot.title }}</b>
+                <b>{{ timeslot.title }}</b> – {{ timeslot.spent_time }}
                 <small>
                     {% if timeslot.tags.all %}
                         [{{ timeslot.tags_count }}: {% for tag in timeslot.tags.all %} {{ tag.title }} {% endfor %}]
