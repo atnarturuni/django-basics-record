@@ -14,6 +14,7 @@
                 <b>{{ timeslot.title }}</b>
                 {{ timeslot.start_date }} – {{ timeslot.end_date }}
                 {% if timeslot.is_realtime %} <small>(realtime)</small> {% endif %}
+                <a href="{% url 'time_slots_edit' timeslot.id %}">изменить</a>
             </li>
         {% endfor %}
     </ul>
