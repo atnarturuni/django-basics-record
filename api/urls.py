@@ -15,8 +15,9 @@ Including another URLconf
 """
 from django.urls import path
 
-from api.views import main_view
+from api.views import main_view, timeslots_view
 
 urlpatterns = [
-    path("", main_view)
+    path("", main_view),
+    path("timeslots/", timeslots_view)
 ]
