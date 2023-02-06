@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 from web.models import User, TimeSlotTag, TimeSlot
 
@@ -23,6 +24,11 @@ class TimeSlotSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     tag_ids = serializers.PrimaryKeyRelatedField(queryset=TimeSlotTag.objects.all(), many=True, write_only=True)
+
+    def validate(self, attrs):
+        if attrs['end_date'] < attrs['start_date']:
+            raise ValidationError("Incorrect dates")
+        return attrs
 
     def save(self, **kwargs):
         tags = self.validated_data.pop("tag_ids")
