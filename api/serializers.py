@@ -10,6 +10,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
+    def save(self, **kwargs):
+        self.validated_data['user_id'] = self.context['request'].user.id
+        return super().save(**kwargs)
+
     class Meta:
         model = TimeSlotTag
         fields = ('id', 'title')
@@ -21,9 +25,11 @@ class TimeSlotSerializer(serializers.ModelSerializer):
     tag_ids = serializers.PrimaryKeyRelatedField(queryset=TimeSlotTag.objects.all(), many=True, write_only=True)
 
     def save(self, **kwargs):
-        tag_ids = self.validated_data.pop("tag_ids")
+        tags = self.validated_data.pop("tag_ids")
         self.validated_data['user_id'] = self.context['request'].user.id
-        return super().save(**kwargs)
+        instance = super().save(**kwargs)
+        instance.tags.set(tags)
+        return instance
 
     class Meta:
         model = TimeSlot
