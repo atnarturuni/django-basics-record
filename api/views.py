@@ -1,4 +1,4 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from api.serializers import TimeSlotSerializer
@@ -6,6 +6,7 @@ from web.models import TimeSlot
 
 
 @api_view(["GET"])
+@permission_classes([])
 def main_view(request):
     return Response({"status": "ok"})
 
