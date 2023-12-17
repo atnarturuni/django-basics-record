@@ -17,7 +17,12 @@ class TimeslotModelViewSet(ModelViewSet):
     serializer_class = TimeSlotSerializer
 
     def get_queryset(self):
-        return TimeSlot.objects.all().select_related("user").prefetch_related("tags").filter(user=self.request.user)
+        return (
+            TimeSlot.objects.all()
+            .select_related("user")
+            .prefetch_related("tags")
+            .filter(user=self.request.user)
+        )
 
 
 class TagsViewSet(ListModelMixin, CreateModelMixin, GenericViewSet):

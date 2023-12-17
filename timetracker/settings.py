@@ -37,10 +37,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'rest_framework',
+    "rest_framework",
     "rest_framework.authtoken",
     "web",
-    "api"
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "timetracker.middlewares.SqlPrintingMiddleware",
-    "timetracker.middlewares.StatMiddleware"
+    "timetracker.middlewares.StatMiddleware",
 ]
 
 ROOT_URLCONF = "timetracker.urls"
@@ -86,7 +86,7 @@ DATABASES = {
         "USER": os.environ.get("DB_USER", "timetracker"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "timetracker"),
         "HOST": os.environ.get("DB_HOST", "localhost"),
-        "PORT": 5432
+        "PORT": 5432,
     }
 }
 
@@ -100,7 +100,7 @@ CACHES = {
         "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        },
     }
 }
 
@@ -149,15 +149,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MEDIA_ROOT = "media/"
 MEDIA_URL = "media/"
 
-LOGIN_URL = 'auth'
-LOGIN_REDIRECT_URL = 'main'
+LOGIN_URL = "auth"
+LOGIN_REDIRECT_URL = "main"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework.authentication.TokenAuthentication"
+        "rest_framework.authentication.TokenAuthentication",
     ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated"
-    ]
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
 }

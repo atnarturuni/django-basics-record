@@ -20,11 +20,7 @@ from rest_framework.routers import SimpleRouter
 from api.views import main_view, TimeslotModelViewSet, TagsViewSet
 
 router = SimpleRouter()
-router.register("timeslots", TimeslotModelViewSet, basename='timeslots')
-router.register("tags", TagsViewSet, basename='tags')
+router.register("timeslots", TimeslotModelViewSet, basename="timeslots")
+router.register("tags", TagsViewSet, basename="tags")
 
-urlpatterns = [
-    path("", main_view),
-    path("token/", obtain_auth_token),
-    *router.urls
-]
+urlpatterns = [path("", main_view), path("token/", obtain_auth_token), *router.urls]
