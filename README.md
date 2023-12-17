@@ -11,5 +11,8 @@
   - [PostgreSQL](https://www.postgresql.org/)
 - `python manage.py migrate` - примененить миграции
 - `python manage.py runserver` - запустить сервер для разработки на http://127.0.0.1:8000
+- `pip install pre-commit` - установить pre-commit
+- `pre-commit install` - установить git hooks с линтерами
+- `pre-commit run -a` - запустить линтер на всех файлах 
 
 &copy; 2023 [Артур Атнагулов](https://atnartur.dev)

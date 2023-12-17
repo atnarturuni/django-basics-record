@@ -23,13 +23,15 @@ class Command(BaseCommand):
                 start_date = current_date + timedelta(hours=randint(0, 10))
                 end_date = start_date + timedelta(hours=randint(0, 10))
 
-                time_slots.append(TimeSlot(
-                    title=f'generated {day_index}-{slot_index}',
-                    start_date=start_date,
-                    end_date=end_date,
-                    is_realtime=random.choice((True, False)),
-                    user=user
-                ))
+                time_slots.append(
+                    TimeSlot(
+                        title=f"generated {day_index}-{slot_index}",
+                        start_date=start_date,
+                        end_date=end_date,
+                        is_realtime=random.choice((True, False)),
+                        user=user,
+                    )
+                )
 
         saved_time_slots = TimeSlot.objects.bulk_create(time_slots)
         time_slot_tags = []
@@ -37,6 +39,8 @@ class Command(BaseCommand):
             count_of_tags = randint(0, len(tags))
             for tag_index in range(count_of_tags):
                 time_slot_tags.append(
-                    TimeSlot.tags.through(timeslot_id=time_slot.id, timeslottag_id=tags[tag_index].id)
+                    TimeSlot.tags.through(
+                        timeslot_id=time_slot.id, timeslottag_id=tags[tag_index].id
+                    )
                 )
         TimeSlot.tags.through.objects.bulk_create(time_slot_tags)

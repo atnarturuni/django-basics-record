@@ -19,7 +19,11 @@ def print_queries(queries):
         print(f"[{tag}] {sql}\n")
         total_queries = counter
 
-    print(f"[{tag}] \033[1;32m[" f"TOTAL TIME: {total_time} seconds, QUERIES: {total_queries}" f"]\033[0m")
+    print(
+        f"[{tag}] \033[1;32m["
+        f"TOTAL TIME: {total_time} seconds, QUERIES: {total_queries}"
+        f"]\033[0m"
+    )
 
 
 class SqlPrintingMiddleware(object):
